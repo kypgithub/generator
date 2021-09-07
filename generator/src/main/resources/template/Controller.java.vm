@@ -1,0 +1,102 @@
+package ${package}.${moduleName}.controller;
+
+import java.util.Arrays;
+import java.util.Map;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.zht.common.responseVo.${className}ResVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import com.zht.common.constant.BaseHttpApiResult;
+import com.zht.common.requestVo.${className}ReqVo;
+import com.zht.common.constant.BaseHttpApiResult;
+import ${package}.${moduleName}.dao.entity.${className}Entity;
+import ${package}.${moduleName}.service.${className}Service;
+
+
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@RestController
+@RequestMapping("/${classname}")
+public class ${className}Controller {
+
+    @Autowired
+    private ${className}Service ${classname}Service;
+
+    /**
+     * 分页列表
+     * @param ${classname}
+     * @return
+     */
+    @RequestMapping("/queryPage")
+    @RequiresPermissions("zht:${pathName}:list")
+    public BaseHttpApiResult<IPage<${className}ResVo>> queryPage(@RequestBody ${className}ReqVo ${classname}){
+        return ${classname}Service.queryPage(${classname});
+    }
+
+    /**
+     * 列表
+     * @param ${classname}
+     * @return
+     */
+    @RequestMapping("/list")
+    @RequiresPermissions("zht:${pathName}:list")
+    public BaseHttpApiResult<List<${className}ResVo>> list(@RequestBody ${className}ReqVo ${classname}){
+        return ${classname}Service.list(${classname});
+    }
+
+
+    /**
+     * 详情
+     * @param ${pk.attrname}
+     * @return
+     */
+    @RequiresPermissions("zht:${pathName}:info")
+    @RequestMapping("/info/{${pk.attrname}}")
+    public BaseHttpApiResult<${className}ResVo> info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
+		return ${classname}Service.getById(${pk.attrname});
+    }
+
+    /**
+     * 新增
+     * @param ${classname}
+     * @return
+     */
+    @RequestMapping("/save")
+    @RequiresPermissions("zht:${pathName}:save")
+    public BaseHttpApiResult save(@RequestBody ${className}ReqVo ${classname}){
+		return ${classname}Service.save(${classname});
+    }
+
+    /**
+     * 修改
+     * @param ${classname}
+     * @return
+     */
+    @RequestMapping("/update")
+    @RequiresPermissions("zht:${pathName}:update")
+    public BaseHttpApiResult update(@RequestBody ${className}ReqVo ${classname}){
+		return ${classname}Service.updateById(${classname});
+    }
+
+    /**
+     * 删除
+     */
+    @RequestMapping("/delete")
+    @RequiresPermissions("zht:${pathName}:delete")
+    public BaseHttpApiResult delete(@RequestBody ${pk.attrType}[] ${pk.attrname}s){
+		return ${classname}Service.removeByIds(Arrays.asList(${pk.attrname}s));
+    }
+
+}

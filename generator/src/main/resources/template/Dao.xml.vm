@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="$classname">
+    <select id="query" parameterClass="java.util.HashMap" resultClass="${package}.${moduleName}.domain.${className}">
+        SELECT
+#foreach($column in $columns)
+        ${column.columnName} as ${column.attrname}#if($velocityCount != $columns.size()), #end
+#end
+        FROM
+        ${tableName}
+        WHERE 1=1
+#foreach($column in $columns)
+        <isNotEmpty prepend="AND" property="$column.attrname">
+            $column.columnName = #$column.attrname#
+        </isNotEmpty>
+#end
+##        <dynamic prepend="ORDER BY">
+##            <isNotEmpty property="orderBy">
+##                $orderBy$
+##            </isNotEmpty>
+##            <isEmpty property="orderBy">
+##                COMPANY_CODE asc
+##            </isEmpty>
+##        </dynamic>
+    </select>
+
+    <select id="count" resultClass="int">
+		select count(*) from ${tableName}
+        WHERE 1=1
+        #foreach($column in $columns)
+            <isNotEmpty prepend="AND" property="$column.attrname">
+                $column.columnName = #$column.attrname#
+            </isNotEmpty>
+        #end
+	</select>
+
+    <insert id="insert">
+        INSERT INTO
+        ${tableName}
+        (
+#foreach($column in $columns)
+        $column.columnName#if($velocityCount != $columns.size()),#end
+#end
+        )values
+        (
+#foreach($column in $columns)
+        #$column.attrname# #if($velocityCount != $columns.size()),#end
+#end
+        )
+    </insert>
+    <delete id="delete">
+        DELETE FROM ${tableName} WHERE
+        #foreach($column in $columns)
+            #if($column.columnName == $pk.columnName)
+                $column.columnName = #$column.attrname#
+            #end
+        #end
+    </delete>
+    <update id="update">
+        UPDATE ${tableName}
+        SET
+        #foreach($column in $columns)
+            $column.columnName = #$column.attrname# #if($velocityCount != $columns.size()),#end
+        #end
+    </update>
+</sqlMap>

@@ -1,0 +1,88 @@
+package ${package}.${moduleName}.service.impl;
+
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zht.common.constant.BaseHttpApiResult;
+import com.zht.common.requestVo.${className}ReqVo;
+import com.zht.common.responseVo.${className}ResVo;
+import com.zht.dao.mapper.${className}Mapper;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.zht.common.utils.BizException;
+import com.zht.common.utils.OrderUtil;
+import java.util.Map;
+import java.util.List;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import ${package}.${moduleName}.dao.entity.${className}Entity;
+import ${package}.${moduleName}.service.${className}Service;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Service
+public class ${className}ServiceImpl implements ${className}Service {
+    @Autowired
+    private ${className}Mapper ${classname}Mapper;
+
+    @Override
+    public BaseHttpApiResult<IPage<${className}ResVo>> queryPage(${className}ReqVo ${classname}) {
+        Page page = OrderUtil.setOrders(${classname}.getOrderList(), ${classname}.getCurrentPage(), ${classname}.getPageSize());
+            ${className}Entity ${classname}Entity = new ${className}Entity();
+        BeanUtils.copyProperties(${classname}, ${classname}Entity);
+        QueryWrapper<${className}Entity> ${classname}EntityQueryWrapper = new QueryWrapper<>(${classname}Entity);
+        IPage<${className}ResVo> pageData = ${classname}Mapper.selectPage(page, ${classname}EntityQueryWrapper);
+        return BaseHttpApiResult.success(pageData);
+    }
+
+    @Override
+    public BaseHttpApiResult<List<${className}ResVo>> list(${className}ReqVo ${classname}) {
+            ${className}Entity ${classname}Entity = new ${className}Entity();
+        BeanUtils.copyProperties(${classname}, ${classname}Entity);
+        QueryWrapper ${classname}QueryWrapper = new QueryWrapper<>(${classname}Entity);
+        List<${className}ResVo> data = ${classname}Mapper.selectList(${classname}QueryWrapper);
+        return BaseHttpApiResult.success(data);
+    }
+
+    @Override
+    public BaseHttpApiResult<${className}ResVo> getById(String id) {
+        ${className}Entity ${classname}Entity = ${classname}Mapper.selectById(id);
+        ${className}ResVo ${classname}ResVo = new ${className}ResVo();
+        BeanUtils.copyProperties(${classname}Entity, ${classname}ResVo);
+        return BaseHttpApiResult.success(${classname}ResVo);
+    }
+
+    @Override
+    public BaseHttpApiResult save(${className}ReqVo ${classname}) {
+        Long userId = ShiroUtils.getUserId();
+        ${className}Entity ${classname}Entity = new ${className}Entity();
+        BeanUtils.copyProperties(${classname}, ${classname}Entity);
+        ${classname}Mapper.insert(${classname}Entity);
+        return BaseHttpApiResult.success();
+    }
+
+    @Override
+    public BaseHttpApiResult updateById(${className}ReqVo ${classname}) {
+        Long userId = ShiroUtils.getUserId();
+        if (StringUtils.isBlank(${classname}.getId())){
+            throw new BizException(BaseCode.ID_IS_NOTNULL);
+        }
+        ${className}Entity ${classname}Entity = ${classname}Mapper.selectById(${classname}.getId());
+        BeanUtils.copyProperties(${classname}, ${classname}Entity);
+        ${classname}Mapper.updateById(${classname}Entity);
+        return BaseHttpApiResult.success();
+    }
+
+    @Override
+    public BaseHttpApiResult removeByIds(List<String> asList) {
+        ${classname}Mapper.deleteBatchIds(asList);
+        return BaseHttpApiResult.success();
+    }
+
+}

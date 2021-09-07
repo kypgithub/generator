@@ -1,0 +1,135 @@
+package ${package}.${moduleName}.common.${module_1_Name}.domain;
+import com.baosight.iplat4j.core.ei.EiColumn;
+import com.baosight.iplat4j.core.data.DaoEPBase;
+import java.util.HashMap;
+import java.util.Map;
+import com.baosight.iplat4j.core.util.StringUtils;
+import com.baosight.iplat4j.core.util.DateUtils;
+import com.baosight.iplat4j.core.util.NumberUtils;
+import java.sql.Timestamp;
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+import java.util.Date;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public class ${className} extends DaoEPBase{
+#foreach ($column in $columns)
+	/**
+	 * $column.comments
+	 */
+	#if($column.attrType == "String")
+	private $column.attrType $column.attrname = "";
+	#end
+	#if($column.attrType == "Integer")
+	private $column.attrType $column.attrname = 0;
+	#end
+	#if($column.attrType == "Long")
+	private $column.attrType $column.attrname = 0l;
+	#end
+	#if($column.attrType == "Float")
+	private $column.attrType $column.attrname = 0f;
+	#end
+	#if($column.attrType == "Double")
+	private $column.attrType $column.attrname = 0d;
+	#end
+	#if($column.attrType == "BigDecimal")
+	private $column.attrType $column.attrname = new BigDecimal("0");
+	#end
+	#if($column.attrType == "Date")
+	private $column.attrType $column.attrname;
+	#end
+	#if($column.attrType == "DateTime")
+	private $column.attrType $column.attrname;
+	#end
+	#if($column.attrType == "Timestamp")
+	private $column.attrType $column.attrname;
+	#end
+#end
+
+#foreach ($column in $columns)
+	/**
+	 * 设置：${column.comments}
+	 */
+	public void set${column.attrName}($column.attrType $column.attrname) {
+		this.$column.attrname = $column.attrname;
+	}
+	/**
+	 * 获取：${column.comments}
+	 */
+	public $column.attrType get${column.attrName}() {
+		return $column.attrname;
+	}
+#end
+//构造列信息，需要与每个属性匹配
+	public void initMetaData(){
+		EiColumn eiColumn;
+#foreach ($column in $columns)
+		eiColumn = new EiColumn("$column.attrname");
+		#if($column.columnName == $pk.columnName)
+		eiColumn.setPrimaryKey(true);
+		#end
+		#if($column.attrType == "Integer")
+		eiColumn.setFieldLength($column.npLength);
+		#end
+		#if($column.attrType == "Float")
+		eiColumn.setFieldLength($column.npLength);
+		eiColumn.setScaleLength($column.nsLength);
+		#end
+		#if($column.attrType == "Double")
+		eiColumn.setFieldLength($column.npLength);
+		eiColumn.setScaleLength($column.nsLength);
+		#end
+		#if($column.attrType == "BigDecimal")
+		eiColumn.setFieldLength($column.npLength);
+		eiColumn.setScaleLength($column.nsLength);
+		#end
+		eiColumn.setDescName("${column.comments}");
+		eiMetadata.addMeta(eiColumn);
+	#end
+    }
+	@Override
+	public void fromMap(Map map){
+#foreach ($column in $columns)
+	#if($column.attrType == "String")
+	set$column.attrName (StringUtils.defaultIfEmpty(StringUtils.toString(map.get("$column.attrname")), $column.attrname));
+	#end
+	#if($column.attrType == "Integer")
+	set$column.attrName (NumberUtils.to$column.attrType (StringUtils.toString(map.get("$column.attrname")), $column.attrname));
+	#end
+	#if($column.attrType == "Float")
+	set$column.attrName (NumberUtils.to$column.attrType (StringUtils.toString(map.get("$column.attrname")), $column.attrname));
+	#end
+	#if($column.attrType == "Double")
+	set$column.attrName (NumberUtils.to$column.attrType (StringUtils.toString(map.get("$column.attrname")), $column.attrname));
+	#end
+	#if($column.attrType == "BigDecimal")
+	set$column.attrName (NumberUtils.toBigDecimal (StringUtils.toString(map.get("$column.attrname")), $column.attrname));
+	#end
+	#if($column.attrType == "Date")
+	set$column.attrName (DateUtils.toDate10 (StringUtils.toString(map.get("$column.attrname"))));
+	#end
+	#if($column.attrType == "DateTime")
+	set$column.attrName (DateUtils.toDateTime19 (StringUtils.toString(map.get("$column.attrname"))));
+	#end
+	#if($column.attrType == "Timestamp")
+	set$column.attrName (DateUtils.toTimestamp(StringUtils.toString(map.get("$column.attrname"))));
+	#end
+#end
+	}
+	@Override
+	public Map toMap(){
+		Map map = new HashMap();
+	#foreach ($column in $columns)
+		map.put("$column.attrname",StringUtils.toString($column.attrname, eiMetadata.getMeta("$column.attrname")));
+	#end
+		return map;
+	}
+
+}
